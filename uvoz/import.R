@@ -1,20 +1,23 @@
 ## IMPORT
 
 
+library(rvest)
 
-# vir :https://www.blockchain.com/charts
+#vir :https://www.blockchain.com/charts
 
-# zapisemo vse datoteke
-setwd("C:/Users/andre/Desktop/R PROJEKT/Bitcoin analiza")
-files <- list.files(path = "../Bitcoin analiza", pattern = "*.csv")
+# zapisemo datoteke
+
+uvoz <- c("market-price.csv","market-cap.csv","n-transactions.csv","n-transactions-total.csv","trade-volume.csv","total-bitcoins.csv")
 
 # vstavimo v data frame
-BTC <- do.call(cbind, lapply(files, function(x) read.csv(file = x, header = F, stringsAsFactors = FALSE)))
+setwd("../podatki")
+BTC <- do.call(cbind, lapply(uvoz, function(x) read.csv(file = x, 
+                                                header = F, encoding = "UTF-8", stringsAsFactors = FALSE)))
 # odstranimo ponavljajoce se stolpce
 BTC <- BTC[!duplicated(as.list(BTC))]
 
 # imenujemo stolpce
-colnames(BTC) <- c("Datum", files)
+colnames(BTC) <- c("Datum", "Cena($)", "Tržna kapitalizacija", "Število transakcij", "Skupno število transakcij", "Dnevni promet", "Skupno število BTC")
 
 BTC[,2:7] <- lapply(BTC[,2:7], function(x) round(x, digits =  2))
 
@@ -25,14 +28,14 @@ BTC[,1] <- gsub(pattern = "00:00:00", replacement = "", BTC[,1])
         
 # po valutah vir: https://data.bitcoinity.org/markets/volume/30d?c=e&t=b
 
-val <- read.csv("C:/Users/andre/Desktop/R PROJEKT/bitcoinity_data.csv")
+val <- read.csv("../podatki/bitcoinity_data.csv")
 val[,1] <- gsub(pattern = "00:00:00 UTC", replacement = "", x = val[,1])
 val[,2:11] <- lapply(val[,2:11], function(x) round(x, digits =  2))
 
 
 # bitcoin bankomati po svetu
 
-atm <- read_html("https://coinatmradar.com/countries/") %>% 
+atm <- read_html("https://coinatmradar.com/countries/", encoding = "UTF-8") %>% 
 html_nodes(xpath = '//*[@class="country"]') %>% 
 html_text()
 
@@ -59,3 +62,10 @@ atm[1,1] <- "USA"
 #         scale_colour_brewer()+ 
 #         theme_bw()
 # 
+
+
+
+# zapis datotek v csv obliki
+write.csv(BTC, file = "BTC.csv", row.names = F)
+write.csv(atm, file = "atm.csv", row.names = F)
+write.csv(val, file = "val.csv", row.names = F)
