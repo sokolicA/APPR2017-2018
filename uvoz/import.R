@@ -38,6 +38,11 @@ val[,2:11] <- lapply(val[,2:11], function(x) round(x, digits =  2))
 
 val[,1] <- as.Date(val[,1], format="%Y-%m-%d")
 
+#skupen promet za 180 dni
+
+Skup_promet <- setNames(data.frame(colSums(val[,-1])), c("Skupen_promet"))
+
+a <- merge(Skup_promet, atm, by =c('JPY' = 'Japan'))
 
 # bitcoin bankomati po svetu
 
