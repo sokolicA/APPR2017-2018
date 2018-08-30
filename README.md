@@ -12,7 +12,7 @@ Podatke o časovnih vrstah sem dobil v CSV obliki na spletni strani https://www.
 Vsi podatki za časovne vrste bodo bili shranjeni v obliki data frame, kjer bo prvi stolpec datum, vsi naslednji pa npr. cena, število transakcij,... Porazdelitev bitcoin bankomatov bo shranjena v drugi spremenljivki, kjer bodo v prvem stolpcu države, v drugem pa število lokacij bankomatov v državah.
 Iskal bom povezave med ceno bitcoina in številom transakcij, med ceno in celotnega števila bitcoinov v obtoku,... Čeprav zelo optimistično, bom s pomočjo prejšnjih cen poskušal napovedati prihodnje z uporabo linearne regresije.
 
-# Tabela 1:
+## Tabela 1:
 Stolpci:
 1. Datum
 2. Cena bitcoina
@@ -22,19 +22,19 @@ Stolpci:
 6. Dnevni promet
 7. Skupno število vseh bitcoinov
 
-# Tabela 2:
+## Tabela 2:
 Stolpci:
 1. Ime države
 2. Promet bitcoinov z valuto 
 
 
-# Tabela 3:
+## Tabela 3:
 Stolpci:
 1. Ime države
 2. Število bitcoin bankomatov v državi
 
-# Program:
+## Program:
 
-* obdelava, uvoz in čiščenje podatkov: uvoz/uvoz.r
-* vizualizacija podatkov: vizualizacija/vizualizacija.r
+* obdelava, uvoz in čiščenje podatkov: 'uvoz/uvoz.r'
+* vizualizacija podatkov: 'vizualizacija/vizualizacija.r'
 * napredna analiza podatkov: 
