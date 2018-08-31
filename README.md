@@ -1,9 +1,6 @@
----
-title: "Analiza bitcoina"
-date: 30.08.2018
-Avtor: Andrej Sokolič
----
+# Analiza bitcoina
 
+Avtor: Andrej Sokolič
 
 
 

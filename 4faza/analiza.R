@@ -50,8 +50,8 @@ plot(fc)
 
 #skupen promet za 180 dni
 
-Skup_promet <- as.data.frame(t(colSums(val[,-1])))
-Skup_promet$Valuta <- as.character(Skup_promet$Valuta)
+Skup_promet <- data.frame(valuta = colnames(val[,-1]), promet  =colSums(val[,-1]), row.names = NULL)
+Skup_promet$valuta <- as.character(Skup_promet$valuta)
 
 #pove st lokacij btc bankomatov v drzavi
 stlok <- function(x){
@@ -59,12 +59,13 @@ stlok <- function(x){
 }
 #izberemo nekaj drzav za primerjavo.. predpostavimo da se v vsaki drzavi lahko trguje le s svojo valuto ?
 drzave <- c("Japan", "UK", "Poland", "USA", "Canada")
-valute <- c("JPY", "GBP", "PLN", "USD", "CAD")
+Valute <- c("JPY", "GBP", "PLN", "USD", "CAD")
 #koncna tabela za primerjavo
-stlok_prom <- data.frame(Drzava = drzave, st_lok = sapply(drzave, function(x) stlok(x), USE.NAMES = F), promet = as.numeric(select(Skup_promet, valute)))
-stlok_prom$Drzava <- as.character(stlok_prom$Drzava)
+stlok_prom <- data.frame(Drzava = drzave, 
+                         st_lok = sapply(drzave, function(x) stlok(x), USE.NAMES = F), 
+                         promet = Skup_promet$promet[match(Valute, Skup_promet$valuta)])
 
 
 cor(stlok_prom$st_lok, stlok_prom$promet)
-
-cor(stlok_prom$st_lok[stlok_prom$st_lok < 500], stlok_prom$promet[stlok_prom$st_lok < 500] )
+# na to zelo vplivajo ZDA:
+cor(stlok_prom$st_lok[stlok_prom$st_lok < 1000], stlok_prom$promet[stlok_prom$st_lok < 1000] )
