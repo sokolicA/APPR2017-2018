@@ -1,30 +1,82 @@
 ---
-title: "projekt"
+title: "Analiza bitcoina"
 author: "Andrej Sokolič"
 date: "28 avgust 2018"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(rvest)
 ```
 
-## R Markdown
+## 1. Tema
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+V svojem projektu bom analiziral gibanje cene najbolj popularne kriptovalute bitcoin. Izbral bom podatke s katerimi bom opisal dnevno gibanje raznih lastnosti trgovanja z bitcoinom kot so cena, število transakcij, volumen transakcij, volumen celotnega števila bitcoinov. Poleg časovnega gibanja bom primerjal število bitcoin bankomatov po več državah.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+
+## 2. Uvoz, čiščenje in obdelava podatkov
+
+```{r include = FALSE}
+source('./uvoz/import.R', encoding = 'UTF-8')
 ```
 
-## Including Plots
+Podatke sem dobil v HTML obliki na spletni strani https://coinatmradar.com/countries/  in v CSV obliki na https://www.blockchain.com/charts (ogled 26.8.2018) in https://data.bitcoinity.org/markets/volume/30d?c=e&t=b (ogled 26.8.2018).
 
-You can also embed plots, for example:
+Podatke iz virov sem uvozil v tri ločene tabele: atm, BTC in val. Nato sem jih prečistil in v naslednjih fazah tudi združil za namene vizualizacije in analize. Tabeli BTC in val prikazujeta dnevno gibanje raznih lastnostih valute in trgovanja z njo v preteklem letu oz. polletju. Bolj kot dnevni promet nas bo zanimal skupen promet v BTC po valutah v zadnjem polletju, ki ga shranimo v novo tabelo Skup_promet. V tabeli atm pa imamo podana števila lokacij bitcoin bankomatov po državah.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+1. `BTC` 
+* `Datum`
+* `Cena`
+* `Tržna kapitalizacija`
+* `Število transakcij`
+* `Skupno število transakcij`
+* `Promet (v BTC)`
+* `BTC v obtoku`
+
+2. `Skup_promet`
+* `Valuta`
+* `Promet (v BTC)`
+
+3. `atm`
+* `Država`
+* `Število lokacij`
+
+## Analiza in vizualizacija podatkov
+
+Pridobljene podatke za lažje razumevanje prikažemo v grafih. Pogledamo si spreminjanje cene, števila transakcij, prometa, porazdeljenost lokacij bankomatov po evropskih državah. Ker je bitcoin decentralizirana valuta, je njegova cena odvisna zgolj od povpraševanja in ponudbe, na kar pa vpliva ogromno dejavnikov. Zato je napodedovanje njegove cene praktično nemogoče in je njegova cena zelo nestabilna, kar tudi pokažemo s podatki iz preteklega leta. Bolj zanimivo je pogledati kako se promet ali pa število transakcij spreminja v odvisnosti od cene.
+
+```{r include = FALSE}
+source('./vizualizacija/vizualizacija.R', encoding = 'UTF-8')
+source('./4faza/analiza.R')
+```
+Da je cena res zelo spremenljiva pričajo naslednji podatki o najnižji, najvišji ceni in standardnemu odklonu cene:
+```{r, echo=F}
+print(minc)
+print(maxc)
+print(sdc)
+```
+Pregled cene skozi celo leto prikažemo v grafu:
+```{r echo=F}
+print(graf_cene)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+In še gibanje dnevnega števila transakcij, ki v resnici tudi precej niha. Opazimo, da število transackcij vsakih nekaj dni precej pade. To se v bistvu zgodi vsako nedeljo. 
+
+```{r echo=F}
+print(graf_trans)
+```
+
+Hitro opazimo, da sta si grafa precej podobna. Torej, ko se veča cena, se veča tudi število transakcij, ali ravno obratno ?
+
+```{r echo=F}
+scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cena", xlab = "Cema (USD)", ylab = "Število transakcij")
+```
+
+Zanimivo je, da je povezava med številom transakcij in ceno pozitivna za višje cene bitcoina in negativna za nižje cene.
+
+
+```{r echo=F}
+print(zemljevid)
+```

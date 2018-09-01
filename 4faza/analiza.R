@@ -1,8 +1,9 @@
 
 # podatki
 
-source(file = "../uvoz/import.R")
-#PODATKI ZA 1 LETO 27.8.2017 - 26.8.2018
+source(file = "./uvoz/import.R")
+
+library(forecast)
 
 #korelacija med ceno, tržno kap (pričakujemo 1)
 
@@ -27,11 +28,15 @@ sd(BTC$St_transakcij)
 
 #linearna regresija
 
-scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cena")
+scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cena", 
+               xlab = "Cema (USD)", ylab = "Število transakcij")
+#povezava zadnjih 180 dni
+scatter.smooth(x=tail(BTC$Cena,180), y = tail(BTC$St_transakcij, 180), main ="Sevilo transakcij ~ Cena", 
+               xlab = "Cena (USD)", ylab = "Število transakcij")
 
-scatter.smooth(x=tail(BTC$Cena,180), y = tail(BTC$St_transakcij, 180), main ="Sevilo transakcij ~ Cena")
-
-scatter.smooth(x=tail(BTC$Datum,180), y = tail(BTC$Cena, 180), main ="Cena ~ Datum")
+scatter.smooth(x=tail(BTC$Datum,180), y = tail(BTC$Cena, 180), main ="Cena ~ Datum", 
+               xlab = "Datum", ylab = "Cena (USD)", xaxt = "n")  # %>%
+axis.Date(side = 1, BTC$Datum, format = "%d/%m/%Y")
 
 #opazimo: ko je cena nizja - negativna korelacija, res:
 #indeksi od <9000
@@ -44,14 +49,11 @@ cor(BTC$Cena[i], BTC$St_transakcij[i])
 cena <- msts(BTC$Cena, seasonal.periods = c(7,365))
 c <- tbats(cena)
 fc <- forecast(c, h = 20)
-plot(fc)
+plot(fc, xaxt = 'n')
+axis.Date(side = 1, BTC$Datum + 20, format = "%d/%m/%Y")
 
 
 
-#skupen promet za 180 dni
-
-Skup_promet <- data.frame(valuta = colnames(val[,-1]), promet  =colSums(val[,-1]), row.names = NULL)
-Skup_promet$valuta <- as.character(Skup_promet$valuta)
 
 #pove st lokacij btc bankomatov v drzavi
 stlok <- function(x){
@@ -65,7 +67,7 @@ stlok_prom <- data.frame(Drzava = drzave,
                          st_lok = sapply(drzave, function(x) stlok(x), USE.NAMES = F), 
                          promet = Skup_promet$promet[match(Valute, Skup_promet$valuta)])
 
-
+# povezava
 cor(stlok_prom$st_lok, stlok_prom$promet)
 # na to zelo vplivajo ZDA:
 cor(stlok_prom$st_lok[stlok_prom$st_lok < 1000], stlok_prom$promet[stlok_prom$st_lok < 1000] )
