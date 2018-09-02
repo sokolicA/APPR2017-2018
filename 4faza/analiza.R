@@ -47,9 +47,9 @@ i <- which(BTC$Cena %in% BTC$Cena[BTC$Cena > 8000])
 cor(BTC$Cena[i], BTC$St_transakcij[i])
 
 
-
+#CENA
 #ETS
-
+#format %j preracuna kateri zaporedni dan v letu je datum
 etspl <- function(){cena <- ts(BTC$Cena, frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
 c <- ets(cena)
 fc <- forecast(c, h = 30)
@@ -60,6 +60,21 @@ return(plot(fc, xlim= c(2018.5, 2018.8), ylim = c(2000,13000), main = "Napoved z
 # TBATS
 
 cena <- ts(BTC$Cena, frequency = 365, start = c(2017, as.numeric(format(BTC$Datum[1], "%j")))) # začne 239 dan leta 2017
+c <- tbats(cena)
+fc <- forecast(c, h = 20)
+plot(fc, xaxt = 'n')
+Axis(BTC$Datum, side = 1)
+
+
+#ST trans
+
+etspltr <- function(){cena <- ts(BTC$St_transakcij, frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
+c <- ets(cena)
+fc <- forecast(c, h = 30)
+return(plot(fc, xlim= c(2018.5, 2018.8), main = "Napoved za 30 dni", ylab = "Število transakcij", xlab = "Datum"))}
+
+
+cena <- ts(BTC$St_transakcij, frequency = 365, start = c(2017, as.numeric(format(BTC$Datum[1], "%j")))) # začne 239 dan leta 2017
 c <- tbats(cena)
 fc <- forecast(c, h = 20)
 plot(fc, xaxt = 'n')

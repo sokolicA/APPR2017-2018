@@ -66,7 +66,7 @@ In še gibanje dnevnega števila transakcij, ki v resnici tudi precej niha. Opaz
 print(graf_trans)
 ```
 
-Hitro opazimo, da sta si grafa precej podobna. 
+Vidimo, da sta si grafa na prvi pogled precej podobna. Poglejmo si sedaj še točkast graf števila transakcij glede na ceno in regresijsko funkcijo skozi podatke.
 
 ```{r echo=F}
 scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cena", xlab = "Cena (USD)", ylab = "Število transakcij")
@@ -79,7 +79,7 @@ V spodnjem zemljevidu je prikazano število lokacij BTC bankomatov v nekaterih e
 print(zemljevid22)
 ```
 
-Za zaključek sem z dvema metodama za napovedovanje časovnih vrst probal predvideti ceno BTC. V grafu je napoved za 30 dni vnaprej z vgrajeno metodo `ETS(Exponential smoothing state space model)`.
+Za zaključek sem z dvema metodama za napovedovanje časovnih vrst probal predvideti ceno BTC. V grafu je na podlagi 365 opazovanj iz prejšnjega leta napoved za 30 dni vnaprej z vgrajeno metodo `ETS(Exponential smoothing state space model)`. S svetlejše modro je prikazan 95% interval zaupanja, s temnejšo pa 80% interval zaupanja.
 
 ```{r echo=F}
 etspl()
