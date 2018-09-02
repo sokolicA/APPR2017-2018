@@ -29,7 +29,7 @@ sd(BTC$St_transakcij)
 #linearna regresija
 
 scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cena", 
-               xlab = "Cema (USD)", ylab = "Število transakcij")
+               xlab = "Cena (USD)", ylab = "Število transakcij")
 #povezava zadnjih 180 dni
 scatter.smooth(x=tail(BTC$Cena,180), y = tail(BTC$St_transakcij, 180), main ="Sevilo transakcij ~ Cena", 
                xlab = "Cena (USD)", ylab = "Število transakcij")
@@ -40,20 +40,30 @@ axis.Date(side = 1, BTC$Datum, format = "%d/%m/%Y")
 
 #opazimo: ko je cena nizja - negativna korelacija, res:
 #indeksi od <9000
-i <- which(BTC$Cena %in% BTC$Cena[BTC$Cena < 9000])
+i <- which(BTC$Cena %in% BTC$Cena[BTC$Cena < 8000])
+cor(BTC$Cena[i], BTC$St_transakcij[i])
+
+i <- which(BTC$Cena %in% BTC$Cena[BTC$Cena > 8000])
 cor(BTC$Cena[i], BTC$St_transakcij[i])
 
 
-#predikcija
 
-cena <- msts(BTC$Cena, seasonal.periods = c(7,365))
+#ETS
+
+etspl <- function(){cena <- ts(BTC$Cena, frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
+c <- ets(cena)
+fc <- forecast(c, h = 30)
+return(plot(fc, xlim= c(2018.5, 2018.8), ylim = c(2000,13000), main = "Napoved za 30 dni", ylab = "Cena", xlab = "Datum"))}
+
+
+
+# TBATS
+
+cena <- ts(BTC$Cena, frequency = 365, start = c(2017, as.numeric(format(BTC$Datum[1], "%j")))) # začne 239 dan leta 2017
 c <- tbats(cena)
 fc <- forecast(c, h = 20)
 plot(fc, xaxt = 'n')
-axis.Date(side = 1, BTC$Datum + 20, format = "%d/%m/%Y")
-
-
-
+Axis(BTC$Datum, side = 1)
 
 #pove st lokacij btc bankomatov v drzavi
 stlok <- function(x){

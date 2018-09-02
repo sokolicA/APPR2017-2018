@@ -34,8 +34,8 @@ shinyServer(function(input, output) {
   })
   
   output$pred <- renderPlot({
-          a <- ts(BTC[c(input$spr2)], start = c(2017,238), frequency = 365)
-          b <- tbats(a)
+          a <- ts(BTC[c(input$spr2)], frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
+          b <- ets(a)
           c <- forecast(b, h = as.numeric(input$spr3))
           plot(c, xlab = "Leto", ylab = input$spr2, main = paste("Napoved ", input$spr2, " za ", input$spr3, " dni", sep = ""))
           })
