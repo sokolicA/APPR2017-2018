@@ -71,11 +71,11 @@ zemljevid22 <- ggplot(data = zemljevid2) +
                      aes(x = long, y = lat, group = group, fill = Stevilo_lokacij),color = 'black', show.legend=T) +
         theme_bw()+
         labs(fill ='Število lokacij')+
-        scale_fill_gradient(low = "yellow", high = "purple")+
+        scale_fill_gradient(low = "yellow", high = "red")+
         geom_text(data = inner_join(zemljevid2, top_n(evropske_lok,6, st_lok), by = c("drzava" = "Drzave")) %>%
                           group_by(drzava) %>%
                           summarise(avg_long = mean(long), avg_lat = mean(lat)),
-                  aes(x = avg_long, y = avg_lat, label = drzava), color = "black", size = 4) +
+                  aes(x = avg_long, y = avg_lat, label = drzava), color = "black", size = 3) +
         xlab("Geografska širina") + ylab("Geografska dolžina") +
         coord_quickmap(xlim = c(-25, 40), ylim = c(32, 72))
 

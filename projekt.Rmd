@@ -68,7 +68,7 @@ scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cen
 
 Zanimivo je, da je povezava med številom transakcij in ceno pozitivna za višje cene bitcoina in negativna za nižje cene. Korelacija za podatke, ko je cena nižja od 8000 USD je -0.32, ko je višja od 8000 USD pa kar 0.7.
 
-V spodnjem zemljevidu je prikazano število lokacij BTC bankomatov v nekaterih evropskih državah, ki so obarvane z rumenkasto ali vijolično barvo.
+V spodnjem zemljevidu je prikazano število lokacij BTC bankomatov v nekaterih evropskih državah, ki so obarvane z rumenkasto ali vijolično barvo. Na zemljevidu so prikazana imena 6 držav z največjim številom lokacij BTC bankomatov.
 
 ```{r echo=F}
 print(zemljevid22)
