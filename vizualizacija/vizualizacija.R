@@ -3,7 +3,6 @@ library(dplyr)
 library(maps)
 
 source(file ="./4faza/analiza.R")
-source(file="./lib/uvozi.zemljevid.R")
 
 maxc <- max(BTC$Cena)
 minc <- min(BTC$Cena)
@@ -19,11 +18,11 @@ sdc <- sd(BTC$Cena)
         ylab('Cena(USD)')
         
 
-graf_trans <- ggplot(data = BTC, aes(x = Datum, y = St_transakcij))+ geom_line() +
+graf_trans <- ggplot(data = BTC, aes(x = Datum, y = St_transakcij/1000))+ geom_line() +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5))+
         ggtitle('Graf gibanja dnevnega števila transakcij')+
-        ylab('Število transakcij')
+        ylab('Število transakcij (x1000)')
 
 ggplot(data = BTC, aes(x = Datum, y = Skupno_st_transakcij)) + geom_line()
 
@@ -62,9 +61,10 @@ zemljevid2 <- uvozi.zemljevid("http://www.naturalearthdata.com/http//www.natural
 
 colnames(zemljevid2)[11] <- "drzava"
 zemljevid2$drzava <- as.character(zemljevid2$drzava)
-zemljevid2[grep("United Kingdom", zemljevid2[,1]),11] <- "UK"
-#zemljevid2[zemljevid2$drzava == "United Kingdom", 11] <- "UK"
+zemljevid2[grep("United Kingdom", zemljevid2[,11]),11] <- "UK"
+zemljevid2[grep("Czechia", zemljevid2[,11]),11] <- "Czech Republic"
 atm$Drzava <- as.character(atm$Drzava)
+
 
 zemljevid22 <- ggplot(data = zemljevid2) +
         geom_polygon(data = zemljevid2 %>% left_join(atm, by = c("drzava" = "Drzava")),
@@ -72,9 +72,31 @@ zemljevid22 <- ggplot(data = zemljevid2) +
         theme_bw()+
         labs(fill ='Število lokacij')+
         scale_fill_gradient(low = "yellow", high = "purple")+
-        geom_text(data = inner_join(zemljevid2, evropske_lok[5:10,], by = c("drzava" = "Drzave")) %>%
+        geom_text(data = inner_join(zemljevid2, top_n(evropske_lok,6, st_lok), by = c("drzava" = "Drzave")) %>%
                           group_by(drzava) %>%
                           summarise(avg_long = mean(long), avg_lat = mean(lat)),
-                  aes(x = avg_long, y = avg_lat, label = drzava), color = "black", size = 5) +
+                  aes(x = avg_long, y = avg_lat, label = drzava), color = "black", size = 4) +
         xlab("Geografska širina") + ylab("Geografska dolžina") +
         coord_quickmap(xlim = c(-25, 40), ylim = c(32, 72))
+
+##za lepše imenovanje v shiny
+izbire <- c('Cena (v USD)' =  'Cena', 
+            'Tržna kapizalizacija(v milijardah USD)' = 'Trzna_kap',
+            'Število transakcij(v tisočih)' = 'St_transakcij',
+            'Skupno število transakcij(v milijonih)' = 'Skupno_st_transakcij',
+            'Promet(v milijonih USD)' = 'Promet',
+            'Število BTC v obtoku (v milijonih)' = 'BTC_v_obtoku')
+
+izbire2 <- c('Cena' =  'Cena', 
+            'Tržna kapizalizacija' = 'Trzna_kap',
+            'Število transakcij' = 'St_transakcij',
+            'Skupno število transakcij' = 'Skupno_st_transakcij',
+            'Promet' = 'Promet',
+            'Število BTC v obtoku' = 'BTC_v_obtoku')
+
+izbire3 <- c('cene' =  'Cena', 
+             'tržne kapizalizacije' = 'Trzna_kap',
+             'število transakcij' = 'St_transakcij',
+             'skupnega števila transakcij' = 'Skupno_st_transakcij',
+             'prometa' = 'Promet',
+             'števila BTC v obtoku' = 'BTC_v_obtoku')

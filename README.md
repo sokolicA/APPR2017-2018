@@ -16,7 +16,7 @@ Stolpci:
 3. Tržna kapitalizacija
 4. Število transakcij
 5. Skupno število transakcij
-6. Dnevni promet
+6. Dnevni promet v USD
 7. Skupno število vseh bitcoinov
 
 ## Tabela 2:
@@ -56,3 +56,4 @@ Za zagon tega vzorca je potrebno namestiti sledeče pakete za R:
 * `extrafont` - za pravilen prikaz šumnikov (neobvezno)
 * `maps` - za vgrajene zemljevide
 * `forecast` - za napovedovanje
+* `lubridate` - za delo z datumi

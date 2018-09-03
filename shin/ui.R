@@ -13,7 +13,7 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Grafični prikaz"),
+  titlePanel("Grafični prikaz lastnosti in napovedi"),
   
   tabsetPanel(
           
@@ -22,7 +22,12 @@ shinyUI(fluidPage(
                    
                    sidebarPanel(
                            selectInput("spr", label="Izberi spremenljivko",
-                                       choices=colnames(BTC[1,-1]), selected="ia"),
+                                       choices= c('Cena' =  'Cena', 
+                                                  'Tržna kapizalizacija' = 'Trzna_kap',
+                                                  'Število transakcij' = 'St_transakcij',
+                                                  'Skupno število transakcij' = 'Skupno_st_transakcij',
+                                                  'Promet' = 'Promet',
+                                                  'Število BTC v obtoku' = 'BTC_v_obtoku'), selected="ia"),
                            checkboxGroupInput("ostalo", label="",
                                               selected=c(1))
                    ),
@@ -30,7 +35,14 @@ shinyUI(fluidPage(
           
           tabPanel("Napoved",
                    sidebarPanel(
-                           selectInput("spr2", label = "Izberi spremenljivko", choices = colnames(BTC[,-1]), selected = "aa"),
+                           selectInput("spr2", label = "Izberi spremenljivko", 
+                                       choices = c('Cena' =  'Cena', 
+                                                   'Tržna kapizalizacija' = 'Trzna_kap',
+                                                   'Število transakcij' = 'St_transakcij',
+                                                   'Skupno število transakcij' = 'Skupno_st_transakcij',
+                                                   'Promet' = 'Promet',
+                                                   'Število BTC v obtoku' = 'BTC_v_obtoku'), 
+                                       selected = "af"),
                            selectInput("spr3", label = "Izberi časovno obdobje", choices = seq(3,100, by =1), selected = "ab")
                    ),
                    mainPanel(plotOutput("pred")))

@@ -50,10 +50,21 @@ cor(BTC$Cena[i], BTC$St_transakcij[i])
 #CENA
 #ETS
 #format %j preracuna kateri zaporedni dan v letu je datum
-etspl <- function(){cena <- ts(BTC$Cena, frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
-c <- ets(cena)
-fc <- forecast(c, h = 30)
-return(plot(fc, xlim= c(2018.5, 2018.8), ylim = c(2000,13000), main = "Napoved za 30 dni", ylab = "Cena", xlab = "Datum"))}
+etspl <- function() {
+        cena <- ts(BTC$Cena, frequency = 365, start = c(2017,as.numeric(format(BTC$Datum[1], "%j"))))
+        cc <- ets(cena)
+        fc <- forecast(cc, h = 30)
+        df <- as.data.frame(fc)
+        df$Datum <- as.Date(date_decimal(as.numeric(rownames(df))))
+        colnames(df) <- c("Cena", "lo80", "hi80", "lo95", "hi95", "Datum")
+        ggplot(df, aes(x = Datum, y = Cena)) + geom_line(data = BTC) +
+                theme_bw()+
+                theme(plot.title = element_text(hjust = 0.5))+
+                ggtitle("Napoved za 30 dni") + geom_line(color = "blue") +
+                geom_ribbon(aes(ymin = lo80, ymax = hi80), alpha = .25) +
+                geom_ribbon(aes(ymin = lo95, ymax = hi95), alpha = .25) +
+                xlim(as.Date("2018-07-01"), as.Date("2018-10-01")) + ylim(2000, 12000)
+}
 
 
 

@@ -3,10 +3,12 @@ title: "Analiza bitcoina"
 author: "Andrej Sokolič"
 date: "28 avgust 2018"
 output: html_document
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
-source('./lib/libraries.R')
+source('./lib/libraries.r')
+source('./vizualizacija/vizualizacija.R', encoding = 'UTF-8')
 ```
 
 ## 1. Tema
@@ -16,10 +18,6 @@ V svojem projektu bom analiziral gibanje cene najbolj popularne kriptovalute bit
 
 
 ## 2. Uvoz, čiščenje in obdelava podatkov
-
-```{r include = FALSE}
-source('./uvoz/import.R', encoding = 'UTF-8')
-```
 
 Podatke sem dobil v HTML obliki na spletni strani https://coinatmradar.com/countries/  in v CSV obliki na https://www.blockchain.com/charts (ogled 26.8.2018) in https://data.bitcoinity.org/markets/volume/30d?c=e&t=b (ogled 26.8.2018).
 
@@ -46,10 +44,6 @@ Podatke iz virov sem uvozil v tri ločene tabele: atm, BTC in val. Nato sem jih 
 
 Pridobljene podatke za lažje razumevanje prikažemo v grafih. Pogledamo si spreminjanje cene, števila transakcij, prometa, porazdeljenost lokacij bankomatov po evropskih državah. Ker je bitcoin decentralizirana valuta, je njegova cena odvisna zgolj od povpraševanja in ponudbe, na kar pa vpliva ogromno dejavnikov. Zato je napodedovanje njegove cene praktično nemogoče in je njegova cena zelo nestabilna, kar tudi pokažemo s podatki iz preteklega leta. Bolj zanimivo je pogledati kako se promet ali pa število transakcij spreminja v odvisnosti od cene.
 
-```{r include = FALSE}
-source('./vizualizacija/vizualizacija.R', encoding = 'UTF-8')
-source('./4faza/analiza.R')
-```
 Da je cena res zelo spremenljiva pričajo naslednji podatki o najnižji, najvišji ceni in standardnemu odklonu cene:
 ```{r, echo=F, name = "min"}
 kable(head(t(c(minc, maxc, sdc))), col.names = c("Najnižja cena", "Najvišja cena", "Standardni odklon cene"))
@@ -75,16 +69,18 @@ scatter.smooth(x=BTC$Cena, y = BTC$St_transakcij, main ="Sevilo transakcij ~ Cen
 Zanimivo je, da je povezava med številom transakcij in ceno pozitivna za višje cene bitcoina in negativna za nižje cene. Korelacija za podatke, ko je cena nižja od 8000 USD je -0.32, ko je višja od 8000 USD pa kar 0.7.
 
 V spodnjem zemljevidu je prikazano število lokacij BTC bankomatov v nekaterih evropskih državah, ki so obarvane z rumenkasto ali vijolično barvo.
+
 ```{r echo=F}
 print(zemljevid22)
 ```
 
-Za zaključek sem z dvema metodama za napovedovanje časovnih vrst probal predvideti ceno BTC. V grafu je na podlagi 365 opazovanj iz prejšnjega leta napoved za 30 dni vnaprej z vgrajeno metodo `ETS(Exponential smoothing state space model)`. S svetlejše modro je prikazan 95% interval zaupanja, s temnejšo pa 80% interval zaupanja.
+Za zaključek sem z dvema metodama za napovedovanje časovnih vrst probal predvideti ceno BTC. V grafu je na podlagi 365 opazovanj iz prejšnjega leta napoved za 30 dni vnaprej z vgrajeno metodo `ETS(Exponential smoothing state space model)`. S svetlejše sivo je prikazan 95% interval zaupanja, s temnejše sivo pa 80% interval zaupanja.
 
-```{r echo=F}
+```{r echo=F, warning=FALSE}
 etspl()
 ```
 
-```{r shiny, echo=FALSE}
+
+```{r shiny, echo=FALSE, warning = FALSE}
 shinyAppDir("shin", options=list(width="100%", height=600))
 ```

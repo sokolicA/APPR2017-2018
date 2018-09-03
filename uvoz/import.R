@@ -1,12 +1,11 @@
 ## IMPORT
 
 
-library(rvest)
+source('./lib/libraries.r')
 
 # TABELA 1
 #vir :https://www.blockchain.com/charts
 # zapisemo datoteke
-setwd("../APPR2017-2018")
 
 uvoz <- c("market-price.csv","market-cap.csv","n-transactions.csv","n-transactions-total.csv","trade-volume.csv","total-bitcoins.csv")
 
@@ -26,6 +25,12 @@ BTC[,1] <- gsub(pattern = " 00:00:00", replacement = "", BTC[,1])
 
 #spremenimo v datume
 BTC[,1] <- as.Date(BTC[,1], format = "%Y-%m-%d")
+
+# Za shiny
+
+BTCshiny <- data.frame(Datum = BTC$Datum, Cena = BTC$Cena, Trzna_kap = BTC$Trzna_kap/1000000000,
+                       St_transakcij = BTC$St_transakcij/1000, Skupno_st_transakcij = BTC$Skupno_st_transakcij/1000000,
+                       Promet = BTC$Promet/1000000, BTC_v_obtoku = BTC$BTC_v_obtoku/1000000)
 
 # TABELA 2
 # trgovanje po valutah vir: https://data.bitcoinity.org/markets/volume/30d?c=e&t=b
@@ -61,6 +66,6 @@ atm[grep("United Kingdom", atm[,1]),1] <- "UK"
 
 
 # zapis datotek v csv obliki
-write.csv(BTC, file = "BTC.csv", row.names = F)
-write.csv(atm, file = "atm.csv", row.names = F)
-write.csv(val, file = "val.csv", row.names = F)
+write.csv(BTC, file = "./podatki/BTC.csv", row.names = F)
+write.csv(atm, file = "./podatki/atm.csv", row.names = F)
+write.csv(val, file = "./podatki/val.csv", row.names = F)
